@@ -10,7 +10,7 @@ This enviromental reporter was developed using Eclipse. This Eclipse project inc
 This project has been developed by Technosite R&D department.
 Enviromental reporter is shared under New BSD license. This project folder includes a license file.
 You can share and distribute this project and built software using New BSD license.
-Please, send any feedback to http://www.cloud4all.info
+Please, send any feedback to info@cloud4all.info
 
 ## How to use the service
 Enviromental reporter is an Android service. You have to develop an activity or service which will connect to Enviromental reporter service using binding service connection.
@@ -63,3 +63,11 @@ There is a list of found bugs and topics about Enviromental reporter development
 ### Hardware access problem
 There are problems to access to the hardware. The Enviromental reporter service needs system permissions to solve these problems.
 
+### Observer pattern for the engine
+Enviromental reporter should send notifications for an observer object. This observer could be Flow manager or Orquestator object in Cloud4All.
+The observer has to register as observer and implements the interface of Enviromental reporter class.
+
+### Noise detection
+There is no direct access to microphone stream in Android. We have to use a Media recorder instance to get data from the microphone and get the amplitude of the record.
+We have to decide the time, quality and size for the record.
+The maximum amplitude of the record is the highest volume of the enviroment.

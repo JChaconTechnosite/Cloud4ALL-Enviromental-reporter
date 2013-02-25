@@ -1,5 +1,5 @@
 	Device reporter for Android
-	Copyright 2013, Fundosa Technosite
+	Copyright (C) 2013, Technosite R&D, Fundosa Technosite
 	All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

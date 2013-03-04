@@ -77,9 +77,9 @@ import android.os.Binder;
 import android.os.IBinder;
 
 public class EnviromentalReporterService extends Service{
-	
+
 	// ** Service management
-	
+
 	private final IBinder mBinder = new MyBinder();
 	private EnviromentalReporterEngine enviromentalReporterEngine = null;
 
@@ -100,35 +100,41 @@ public class EnviromentalReporterService extends Service{
 	}
 
 	// ** Method for engine
-	
+
 	public EnviromentalReporterEngine getEngine() {
 		enviromentalReporterEngine = new EnviromentalReporterEngine(getApplicationContext());
 		return enviromentalReporterEngine ; 
 	}
-	
+
 	// ** Methods for results
 
 	// method for getting data from the Enviromental reporter
-	public String getResults(int typeOfData) {
+	public String getResults(EnviromentalReporter.TypeSensor typeOfData) {
 		enviromentalReporterEngine = new EnviromentalReporterEngine(getApplicationContext());
 		String results = null;
 		switch (typeOfData) {
-		case EnviromentalReporter.TYPE_BRIGHTNESS :
+		case BRIGHTNESS :
 			results = String.valueOf(enviromentalReporterEngine.getBrightness());
 			break;
-				}
+		case NOISE :
+			results = String.valueOf(enviromentalReporterEngine.getNoise());
+			break;
+		}
 		return results;
 	}
 
 	// method for getting data from the Enviromental reporter using a custom context
-	public String getResultsWithContext(Context context, int typeOfData) {
+	public String getResultsWithContext(Context context, EnviromentalReporter.TypeSensor typeOfData) {
 		enviromentalReporterEngine = new EnviromentalReporterEngine(context);
 		String results = null;
 		switch (typeOfData) {
-		case EnviromentalReporter.TYPE_BRIGHTNESS :
+		case BRIGHTNESS:
 			results = String.valueOf(enviromentalReporterEngine.getBrightness());
 			break;
-				}
+		case NOISE :
+			results = String.valueOf(enviromentalReporterEngine.getNoise());
+			break;
+		}
 		return results;
 	}
 

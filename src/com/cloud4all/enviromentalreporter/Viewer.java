@@ -67,7 +67,7 @@ THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-*/
+ */
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -87,15 +87,15 @@ public class Viewer extends Activity {
 	private Button btnRefresh= null;
 	private Handler mHandler = new Handler();
 	private boolean refreshFlag = false;
-private EnviromentalReporterEngine reporter = null;	
-	
+	private EnviromentalReporterEngine reporter = null;	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_viewer);
 		textResults = (TextView) findViewById(R.id.txtResults);
 		btnRefresh = (Button) findViewById(R.id.btnRefresh);
-	btnRefresh.setEnabled(false);
+		btnRefresh.setEnabled(false);
 		doBindService();
 		mHandler.removeCallbacks(showData);
 		mHandler.postDelayed(showData, 1000);
@@ -108,67 +108,71 @@ private EnviromentalReporterEngine reporter = null;
 		return true;
 	}
 
-    
-    @Override
-      protected void onDestroy() {
-          super.onDestroy();
-          mHandler.removeCallbacks(showData);
-     }
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mHandler.removeCallbacks(showData);
+	}
 
 	// ** Interface
-	
-    
-    private Runnable showData = new Runnable() {
-        public void run() {
-        if (refreshFlag) {
-        	textResults.setText("Enviromental reporter\n\nBrightness: "+ String.valueOf( (int) reporter.getBrightness()));
-        	
-        }
-        	
-           mHandler.removeCallbacks(showData);
-           mHandler.postDelayed(this, 900);
-        }
-      };
-      	
-	
+
+
+	private Runnable showData = new Runnable() {
+		public void run() {
+			if (refreshFlag) {
+				textResults.setText("Enviromental reporter\n\nBrightness: "+ String.valueOf( (int) reporter.getBrightness()) + "\nNoise: " + String.valueOf(reporter.getNoise()));
+
+			}
+
+			mHandler.removeCallbacks(showData);
+			mHandler.postDelayed(this, 900);
+		}
+	};
+
+
 	public void refreshControl(View view) {
-		 		if (refreshFlag) {
-		 			refreshFlag = false;
-		 			btnRefresh.setText("Start");
-		 			textResults.setText("Press the start button for more data");
-		 		} else {
-		 			refreshFlag = true;
-		 			btnRefresh.setText("Stop");
-		 		}
+		if (refreshFlag) {
+			refreshFlag = false;
+			btnRefresh.setText("Start");
+			textResults.setText("Press the start button for more data");
+			reporter.stopSensors();
+		} else {
+			refreshFlag = true;
+
+			btnRefresh.setText("Stop");
+			reporter.initSensors(this);
+		}
 	}
-	
+
 	// ** Service connection
 
-		private EnviromentalReporterService sEnviromentalReporter;
+	private EnviromentalReporterService sEnviromentalReporter;
 
-		private ServiceConnection mConnection = new ServiceConnection() {
+	private ServiceConnection mConnection = new ServiceConnection() {
 
-			public void onServiceConnected(ComponentName className, IBinder binder) {
-				sEnviromentalReporter = ((EnviromentalReporterService.MyBinder) binder).getService();
-				if (sEnviromentalReporter != null) {
-										btnRefresh.setEnabled(true);
-					textResults.setText("Service connected. Please, touch the Start button.");
-					reporter = sEnviromentalReporter.getEngine();
-				}
+		public void onServiceConnected(ComponentName className, IBinder binder) {
+			sEnviromentalReporter = ((EnviromentalReporterService.MyBinder) binder).getService();
+			if (sEnviromentalReporter != null) {
+				btnRefresh.setEnabled(true);
+				textResults.setText("Service connected. Please, touch the Start button.");
+				reporter = sEnviromentalReporter.getEngine();
 			}
-
-			public void onServiceDisconnected(ComponentName className) {
-				sEnviromentalReporter = null;
-				btnRefresh.setEnabled(false);
-			}
-		};
-
-		// starts the service connection using bindings
-		void doBindService() {
-			bindService(new Intent(this, EnviromentalReporterService.class), mConnection,
-					Context.BIND_AUTO_CREATE);
 		}
 
-	
-	
+		public void onServiceDisconnected(ComponentName className) {
+			reporter.stopSensors();	
+			sEnviromentalReporter = null;
+			btnRefresh.setEnabled(false);
+		}
+	};
+
+	// starts the service connection using bindings
+	void doBindService() {
+		bindService(new Intent(this, EnviromentalReporterService.class), mConnection,
+				Context.BIND_AUTO_CREATE);
+	}
+
+
+
 }

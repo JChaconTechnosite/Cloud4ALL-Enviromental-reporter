@@ -67,7 +67,7 @@ THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-*/
+ */
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -77,56 +77,84 @@ import android.hardware.SensorManager;
 
 public class EnviromentalReporterEngine implements SensorEventListener {
 
-	
+	private SensorManager sensorManager = null; 
+
 	// Constructor
-			public EnviromentalReporterEngine(Context context) {
-		initSensors(context);
+	public EnviromentalReporterEngine(Context context) {
+		// initSensors(context);
 	}
-	
-	// ** Attributes for sensors **
-	
+
+	// ** Methods for sensors **
+
+	public boolean initSensors(Context ct) {
+		if (sensorManager == null) {
+			sensorManager = (SensorManager) ct.getSystemService(Context.SENSOR_SERVICE);
+		}
+		initBrightnessSensor();
+		initNoiseSensor();
+		return true;
+	}
+
+	public void stopSensors() {
+		stopNoiseSensor();
+	}
+
+	protected void finalize() {
+		stopSensors();		
+	}
+
+	// ** SensorEventListener 
+
+	@Override public void onSensorChanged(SensorEvent event) {
+		if (event.sensor.getType() == Sensor.TYPE_LIGHT){ // brightness sensor 
+			_brightness = event.values[0];
+			// _brightness = (event.values[0] * 100) / maximumBrightness;		 
+		}
+	}
+
+	@Override public void onAccuracyChanged(Sensor sensor, int accuracy) {   
+	}
+
+
+	// * Brightness *	
+
+	private  Sensor brightnessSensor = null;
 	private float _brightness = 0;
 	public float getBrightness() {
 		return _brightness;
 	}
-	
-	// ** Methods for sensors **
 
-	
-	private  SensorManager sensorManager = null;
-	public boolean initSensors(Context ct) {
-				sensorManager = (SensorManager) ct.getSystemService(Context.SENSOR_SERVICE);
-		if (sensorManager == null) return false;
-		else {
-			initBrightnessSensor();
+
+	public boolean initBrightnessSensor() {
+		if (brightnessSensor == null) {
+			brightnessSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT );
+			sensorManager.registerListener(this, brightnessSensor, SensorManager.SENSOR_DELAY_FASTEST);
 			return true;
+		} else return false;
+	}
+
+	// * Noise *
+
+
+	private NoiseSensorEngine sNoise = new NoiseSensorEngine();
+	private boolean noiseSensorActivated = false;
+	private int _noise = 0;
+	public int getNoise() {
+		_noise = sNoise.getAmplitude(); 
+		return _noise;   
+	}
+
+	public void initNoiseSensor() {
+		if (noiseSensorActivated == false) {
+			sNoise.startService();
+			noiseSensorActivated = true;
 		}
 	}
-	
-	// ** SensorEventListener 
-	
-	 @Override public void onSensorChanged(SensorEvent event) {
-		 if (event.sensor.getType() == Sensor.TYPE_LIGHT){ // brightness sensor 
-	_brightness = event.values[0];		 
-		 }
-			 }
-	 
-	 @Override public void onAccuracyChanged(Sensor sensor, int accuracy) {   
-		 		 	 }
- 
 
-// * Brightness *	
-	   
-	 private  Sensor brightnessSensor = null;  
-	 
-	 public boolean initBrightnessSensor() {
-		 brightnessSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT ); 
-		 if (brightnessSensor == null) return false;
-		 else {
-			 sensorManager.registerListener(this, brightnessSensor, SensorManager.SENSOR_DELAY_FASTEST);
-			 			 return true;
-		 }
-	 }
-	
-	
+	private void stopNoiseSensor() {
+		sNoise.stopService();
+		noiseSensorActivated  = false;
+	}
+
+
 }

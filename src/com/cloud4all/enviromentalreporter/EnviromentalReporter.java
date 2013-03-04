@@ -1,4 +1,4 @@
-onspackage com.cloud4all.enviromentalreporter;
+package com.cloud4all.enviromentalreporter;
 
 /*
 
@@ -67,14 +67,11 @@ THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-*/
+ */
 public class EnviromentalReporter {
 
-	
-	// ** Constants **
-	
-	public static final int TYPE_NONE = 0;
-	public static final int TYPE_BRIGHTNESS = 1;
-	public static final int TYPE_NOISE = 2;
-	
+	public enum TypeSensor { NONE, BRIGHTNESS, NOISE };
+
+
+
 }

@@ -140,7 +140,7 @@ public class EnviromentalReporterEngine implements SensorEventListener {
 	private boolean noiseSensorActivated = false;
 	private int _noise = 0;
 	public int getNoise() {
-		_noise = sNoise.getAmplitude(); 
+		_noise = (int) sNoise.getAmplitude(); 
 		return _noise;   
 	}
 

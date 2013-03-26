@@ -7,26 +7,36 @@
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="17" />
-
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+  
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.cloud4all.enviromentalreporter.Viewer"
+            android:name="com.cloud4all.environmentalreporter.Viewer"
             android:label="@string/app_name" >
+            
+                <receiver android:name="com.cloud4all.environmentalreporter.EnvironmentalReporterReceiver" >
             <intent-filter>
+                <action android:name="cloudEnvironmentalReporter" />
+            </intent-filter>
+        </receiver>
+        
+            
+            <intent-filter>
+            <!--
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                -->
             </intent-filter>
         </activity>
         
-        <service android:name="EnviromentalReporterService"
-             android:label="EnviromentalReporter">
-            >
-           </service>      
-    </application>
+        <service android:name="com.cloud4all.environmentalreporter.EnvironmentalReporterService"
+             android:label="EnviromentalReporter" />
+               
+             </application>
 
 </manifest>

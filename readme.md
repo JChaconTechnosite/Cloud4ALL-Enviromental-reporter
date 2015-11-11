@@ -71,3 +71,10 @@ The observer has to register as observer and implements the interface of Envirom
 There is no direct access to microphone stream in Android. We have to use a Media recorder instance to get data from the microphone and get the amplitude of the record.
 We have to decide the time, quality and size for the record.
 The maximum amplitude of the record is the highest volume of the enviroment.
+
+
+## Funding Acknowledgement
+
+The research leading to these results has received funding from the European
+Union's Seventh Framework Programme (FP7/2007-2013) under grant agreement No.289016
+([Cloud4all](http://www.cloud4all.info/)).
